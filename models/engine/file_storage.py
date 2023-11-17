@@ -69,7 +69,7 @@ class FileStorage:
         """Retrieve an object from the storage"""
         all_objects = self.all()
         key = "{}.{}".format(cls.__name__, id)
-        
+
         if key in all_objects:
             return all_objects[key]
         else:
@@ -79,7 +79,7 @@ class FileStorage:
         """ Count the number of objects in storage. """
         if cls is not None:
             return sum(1 for key in self.__objects.keys()
-                       if key.startswith(f"{cls}."))
+                       if key.startswith(f"{cls.__name__}."))
         else:
             return len(self.__objects)
 
