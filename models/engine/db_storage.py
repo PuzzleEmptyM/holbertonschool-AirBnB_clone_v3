@@ -13,6 +13,7 @@ from models.user import User
 from os import getenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import Session
 
 classes = {"Amenity": Amenity, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
@@ -71,7 +72,15 @@ class DBStorage:
 
     def get(self, cls, id):
         """ Retrieve one object. """
-        return self.__session.query(classes[cls]).get(id)
+        session = Session()
+        try:
+            obj = session.query(cls).filter_by(id=id).first()
+            return obj
+        except Exception as e:
+            print(f"Error in DBStorage get: {e}")
+            return None
+        finally:
+            session.close()
 
     def count(self, cls=None):
         """ Count the number of objects in storage. """
