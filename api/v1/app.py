@@ -10,7 +10,7 @@ import os
 app = Flask(__name__)
 
 
-CORS(app)
+CORS(app, resources={'/*': {'origins': '0.0.0.0'}})
 
 
 app.register_blueprint(app_views)
