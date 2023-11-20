@@ -5,7 +5,7 @@ from flask_cors import CORS
 from api.v1.views import app_views
 from models import storage
 import os
-
+from flask import jsonify
 
 app = Flask(__name__)
 
@@ -20,6 +20,12 @@ app.register_blueprint(app_views)
 def close(exc):
     '''teardown closing storage'''
     storage.close()
+
+
+@app.errorhandler(404)
+def not_found(error):
+    """Handler for 404 errors"""
+    return jsonify({"error": "Not found"}), 404
 
 
 if __name__ == '__main__':
