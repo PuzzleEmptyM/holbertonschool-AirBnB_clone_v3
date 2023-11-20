@@ -12,12 +12,12 @@ from models.user import User
 def place_list(city_id):
     '''Retrieves the list of all place objects'''
     p_list = []
-    obj = storage.all('Place').values()
-    for place in obj:
-        if place.city_id != city_id:
-            return jsonify({'error': 'Not Found'}), 404
-        else:
-            p_list.append(place.to_dict())
+    place = storage.all('Place').values()
+    city = storage.get('City', str(city_id))
+    if city is None:
+        return jsonify({'error': 'Not Found'}), 404
+    else:
+        p_list.append(place.to_dict())
     return jsonify(p_list)
 
 
