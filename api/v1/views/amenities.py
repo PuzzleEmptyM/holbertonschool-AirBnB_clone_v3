@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-'''Handling RESTful API on state'''
+'''Handling RESTful API on amenities'''
 from flask import jsonify, request
 from api.v1.views import app_views
 from models import storage
@@ -69,6 +69,7 @@ def update_amenity(amenity_id):
     if not isinstance(json_data, dict):
         return jsonify({'error': 'Not a JSON'}), 400
     for key, value in json_data.items():
-        setattr(amenity, key, value)
+        if key not in ['id', 'created_at', 'updated_at']:
+            setattr(amenity, key, value)
     amenity.save()
     return jsonify(amenity.to_dict()), 200
