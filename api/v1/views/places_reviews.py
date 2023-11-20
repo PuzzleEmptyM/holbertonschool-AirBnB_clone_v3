@@ -23,19 +23,17 @@ def place_reviews_list(place_id):
                  strict_slashes=False)
 def review_id(review_id):
     '''Retrieves the review based on id'''
-    review = storage.get('Review', review_id)
+    review = storage.get('Review', str(review_id))
     if review is None:
         abort(404)
-        return jsonify(review.to_dict())
-    else:
-        abort(404)
+    return jsonify(review.to_dict())
 
 
 @app_views.route('/reviews/<review_id>', methods=['DELETE'],
                  strict_slashes=False)
 def delete_review(review_id):
     '''Deletes the review based on id'''
-    review = storage.get('Review', review_id)
+    review = storage.get('Review', str(review_id))
     if review is not None:
         storage.delete(review)
         storage.save()
