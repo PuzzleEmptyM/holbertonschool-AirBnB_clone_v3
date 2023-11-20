@@ -51,10 +51,10 @@ def delete_place(place_id):
                  strict_slashes=False)
 def create_place(city_id):
     '''Creates Place'''
-    try:
-        json_data = request.get_json()
-        if not isinstance(json_data, dict):
-            return jsonify({'error': 'Not a JSON'}), 400
+    json_data = request.get_json()
+    if not isinstance(json_data, dict):
+        return jsonify({'error': 'Not a JSON'}), 400
+    try:    
         city = storage.get('City', str(city_id))
         if city is None:
             return jsonify({'error': 'Not Found'}), 404
@@ -64,15 +64,22 @@ def create_place(city_id):
         user = storage.get(User, places['user_id'])
         if user is None:
             return jsonify({'error': 'Not Found'}), 404
-        if 'name' not in json_data:
+        if 'name' not in places:
             return jsonify({'error': 'Missing name'})
         places['city_id'] = city_id
         new_place = Place(**places)
         storage.new(new_place)
         storage.save()
-        return jsonify(new_place.to_dict()), 201
-    except Exception:
-        return jsonify({'error': 'Error creating place'})
+        if request.method == 'POST':
+            return jsonify(new_place.to_dict()), 201
+        elif request.method == 'PUT':
+            return jsonify(new_place.to_dict()), 200
+        else:
+            return jsonify({'error': 'Invalid request method'}), 405
+    except (ValueError, KeyError):
+        return jsonify({'error': 'Invalid data'}), 400
+    except Exception as e:
+        return jsonify({'error': 'Error creating place'}), 500
 
 
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
