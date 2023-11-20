@@ -10,6 +10,9 @@ from models import state
 from models.base_model import BaseModel
 import pep8
 import unittest
+from flask import json
+from api.v1.views import state_list, state_id, delete_id, create_state, update_state
+from api.v1.views import app_views
 State = state.State
 
 
@@ -83,7 +86,7 @@ class TestState(unittest.TestCase):
         self.assertEqual(type(new_d), dict)
         self.assertFalse("_sa_instance_state" in new_d)
         for attr in s.__dict__:
-            if attr is not "_sa_instance_state":
+            if attr != "_sa_instance_state":
                 self.assertTrue(attr in new_d)
         self.assertTrue("__class__" in new_d)
 
@@ -103,3 +106,4 @@ class TestState(unittest.TestCase):
         state = State()
         string = "[State] ({}) {}".format(state.id, state.__dict__)
         self.assertEqual(string, str(state))
+
