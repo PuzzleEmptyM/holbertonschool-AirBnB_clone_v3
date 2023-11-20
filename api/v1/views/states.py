@@ -22,19 +22,20 @@ def state_id(state_id):
     try:
         state = storage.get('State', str(state_id))
         return jsonify(state.to_dict())
-    except:
+    except Exception as e:
         return jsonify({'error': 'Not found'}), 404
 
 
-@app_views.route('/states/<state_id>', methods=['DELETE'], strict_slashes=False)
+@app_views.route('/states/<state_id>', methods=['DELETE'],
+                 strict_slashes=False)
 def delete_id(state_id):
     '''Deletes the state based on id'''
-    try:
-        state = storage.get('State', str(state_id))
+    state = storage.get('State', str(state_id))
+    if state is not None:
         storage.delete(state)
         storage.save()
         return jsonify({}), 200
-    except:
+    else:
         return jsonify({'error': 'Error retrieving state'}), 404
 
 
@@ -51,7 +52,7 @@ def create_state():
         storage.new(new_state)
         storage.save()
         return jsonify(new_state.to_dict()), 201
-    except:
+    except Exception as e:
         return jsonify({'error': 'Error creating state'})
 
 
