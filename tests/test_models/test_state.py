@@ -11,7 +11,8 @@ from models.base_model import BaseModel
 import pep8
 import unittest
 from flask import json
-from api.v1.views import state_list, state_id, delete_id, create_state, update_state
+from api.v1.views import state_list, state_id, delete_id
+from api.v1.views import create_state, update_state
 from api.v1.views import app_views
 State = state.State
 
@@ -106,4 +107,3 @@ class TestState(unittest.TestCase):
         state = State()
         string = "[State] ({}) {}".format(state.id, state.__dict__)
         self.assertEqual(string, str(state))
-
