@@ -28,7 +28,7 @@ def place_id(place_id):
     try:
         place = storage.get('Place', str(place_id))
         return jsonify(place.to_dict())
-    except Exception as e:
+    except Exception:
         return jsonify({'error': 'Not Found'}), 404
 
 
@@ -69,7 +69,7 @@ def create_place(city_id):
         storage.new(new_place)
         storage.save()
         return jsonify(new_place.to_dict()), 201
-    except Exception as e:
+    except Exception:
         return jsonify({'error': 'Error creating place'})
 
 
