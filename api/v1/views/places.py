@@ -79,10 +79,11 @@ def update_place(place_id):
     if place is None:
         return jsonify({'error': 'Not Found'}), 404
     elif not isinstance(json_data, dict):
-        return jsonify({'error': 'Not a JSON'})
+        return jsonify({'error': 'Not a JSON'}), 400
     else:
         for key, value in json_data.items():
-            if key not in ['id', 'user_id', 'city_id' 'created_at', 'updated_at']:
+            if key not in ['id', 'user_id', 'city_id',
+                           'created_at', 'updated_at']:
                 setattr(place, key, value)
         storage.save()
         return jsonify(place.to_dict()), 200
