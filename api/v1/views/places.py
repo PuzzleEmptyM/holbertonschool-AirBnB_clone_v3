@@ -74,12 +74,12 @@ def create_place(city_id):
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
 def update_place(place_id):
     '''Updates the place based on id'''
-    place = storage.get('Place', str(place_id))
-    if place is None:
-        return jsonify({'error': 'Not Found'}), 404
     json_data = request.get_json()
+    place = storage.get('Place', str(place_id))
     if not isinstance(json_data, dict):
         return jsonify({'error': 'Not a JSON'})
+    if place is None:
+        return jsonify({'error': 'Not Found'}), 404
     for key, value in json_data.items():
         if key not in ['id', 'created_at', 'updated_at']:
             setattr(place, key, value)
