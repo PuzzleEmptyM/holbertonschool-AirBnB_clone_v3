@@ -58,12 +58,14 @@ def create_place(city_id):
             return jsonify({'error': 'Not Found'}), 404
         if 'user_id' not in json_data:
             return jsonify({'error': 'Missing user_id'}), 400
-        user = storage.get(User, json_data.get('user_id'))
+        places = request.get_json()
+        user = storage.get(User, places['user_id'])
         if user is None:
             return jsonify({'error': 'Not Found'}), 404
         if 'name' not in json_data:
             return jsonify({'error': 'Missing name'})
-        new_place = Place(user_id=json_data['user_id'], name=json_data['name'])
+        places['city_id'] = city_id
+        new_place = Place(**places)
         storage.new(new_place)
         storage.save()
         return jsonify(new_place.to_dict()), 201
