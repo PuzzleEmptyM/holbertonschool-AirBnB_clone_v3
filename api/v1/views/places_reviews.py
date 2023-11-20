@@ -74,7 +74,7 @@ def create_review(place_id):
                  strict_slashes=False)
 def update_review(review_id):
     '''Updates a review object'''
-    review = storage.get('Review', review_id)
+    review = storage.get('Review', str(review_id))
     if review is None:
         abort(404)
 
