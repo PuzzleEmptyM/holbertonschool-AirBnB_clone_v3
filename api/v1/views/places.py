@@ -57,18 +57,18 @@ def create_place(city_id):
     city = storage.get('City', str(city_id))
     if city is None:
         return jsonify({'error': 'Not Found'}), 404
-    if 'user_id' not in json_data:
+    elif 'user_id' not in json_data:
         return jsonify({'error': 'Missing user_id'}), 400
-    if 'name' not in json_data:
-        return jsonify({'error': 'Missing name'})
-    places = request.get_json()
-    user = storage.get(User, places['user_id'])
-    if user is None:
+    elif storage.get(User, json_data['user_id']) is None:
         return jsonify({'error': 'Not Found'}), 404
-    places['city_id'] = city_id
-    new_place = Place(**places)
-    storage.save()
-    return jsonify(new_place.to_dict()), 201
+    if 'name' not in json_data:
+        return jsonify({'error': 'Missing name'}), 400
+    else:
+        places = request.get_json()
+        places['city_id'] = city_id
+        new_place = Place(**places)
+        storage.save()
+        return jsonify(new_place.to_dict()), 201
 
 
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
@@ -82,7 +82,7 @@ def update_place(place_id):
         return jsonify({'error': 'Not a JSON'})
     else:
         for key, value in json_data.items():
-            if key not in ['id', 'created_at', 'updated_at']:
+            if key not in ['id', 'user_id', 'city_id' 'created_at', 'updated_at']:
                 setattr(place, key, value)
         storage.save()
         return jsonify(place.to_dict()), 200
