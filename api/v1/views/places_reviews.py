@@ -39,35 +39,34 @@ def delete_review(review_id):
         storage.save()
         return jsonify({}), 200
     else:
+        
         abort(404)
 
 
 @app_views.route('/places/<place_id>/reviews', methods=['POST'],
                  strict_slashes=False)
 def create_review(place_id):
-    '''Creates a review'''
-    place = storage.get('Place', place_id)
+    json_data = request.get_json()
+    if not isinstance(json_data, dict):
+         abort(400, 'Not a JSON')
+    place = storage.get('Place', str(place_id))
     if place is None:
         abort(404)
-
-    try:
-        json_data = request.get_json()
-        if not isinstance(json_data, dict):
-            abort(400, 'Not a JSON')
-        if 'user_id' not in json_data:
-            abort(400, 'Missing user_id')
-        user = storage.get('User', json_data['user_id'])
-        if user is None:
-            abort(404)
-        if 'text' not in json_data:
-            abort(400, 'Missing text')
-        new_review = Review(user_id=json_data['user_id'],
-                            place_id=place_id, **json_data)
-        storage.new(new_review)
-        storage.save()
-        return jsonify(new_review.to_dict()), 201
-    except Exception:
-        abort(400, 'Error creating review')
+    elif 'user_id' not in json_data:
+        abort(400, 'Missing user id')
+    elif storage.get(User, json_data['user_id']) is None:
+        abort(404)
+    if 'text' not in json_data:
+        abort(400, 'Missing text')
+    else:
+        try:
+            reviews = request.get_json()
+            reviews['place_id'] = place_id
+            new_review = Review(**reviews)
+            storage.save()
+            return jsonify(new_review.to_dict()), 201
+        except Exception:
+            abort(400, 'Error creating review')
 
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'],
