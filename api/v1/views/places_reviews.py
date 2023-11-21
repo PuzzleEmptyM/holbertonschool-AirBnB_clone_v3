@@ -48,7 +48,7 @@ def delete_review(review_id):
 def create_review(place_id):
     json_data = request.get_json()
     if not isinstance(json_data, dict):
-         abort(400, 'Not a JSON')
+        abort(400, 'Not a JSON')
     place = storage.get('Place', str(place_id))
     if place is None:
         abort(404)
